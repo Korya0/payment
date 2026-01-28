@@ -7,15 +7,15 @@ class PaymentCubit extends Cubit<PaymentState> {
 
   PaymentCubit(this.paymentRepository) : super(PaymentInitial());
 
-  Future<void> makePayment({
+  // دالة مخصصة لـ Stripe
+  Future<void> makeStripePayment({
     required String amount,
     required String currency,
-    required String
-    customerId, // مستقبلاً سيأتي هذا من Auth Provider أو User Model
+    required String customerId,
   }) async {
     emit(PaymentLoading());
 
-    var initResult = await paymentRepository.initPaymentSheet(
+    var initResult = await paymentRepository.initStripePayment(
       amount: amount,
       currency: currency,
       customerId: customerId,
@@ -27,7 +27,7 @@ class PaymentCubit extends Cubit<PaymentState> {
       },
       (success) async {
         emit(PaymentReady());
-        var displayResult = await paymentRepository.displayPaymentSheet();
+        var displayResult = await paymentRepository.displayStripePaymentSheet();
 
         displayResult.fold(
           (failure) => emit(PaymentFailure(failure.errorMessage)),
@@ -36,4 +36,7 @@ class PaymentCubit extends Cubit<PaymentState> {
       },
     );
   }
+
+  // مستقبلاً يمكنك إضافة هذه الدالة
+  // Future<void> makePaypalPayment() async { ... }
 }

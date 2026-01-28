@@ -10,7 +10,7 @@ class CheckoutView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Stripe Checkout'), centerTitle: true),
+      appBar: AppBar(title: const Text('Checkout'), centerTitle: true),
       body: Center(
         child: BlocConsumer<PaymentCubit, PaymentState>(
           listener: (context, state) {
@@ -35,24 +35,45 @@ class CheckoutView extends StatelessWidget {
               return const CircularProgressIndicator();
             }
 
-            return ElevatedButton(
-              onPressed: () {
-                // استخدام الـ Customer ID من ملف الثوابت
-                context.read<PaymentCubit>().makePayment(
-                  amount: '1500',
-                  currency: 'USD',
-                  customerId: StripeKeys.testCustomerId,
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 40,
-                  vertical: 15,
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<PaymentCubit>().makeStripePayment(
+                      amount: '1500',
+                      currency: 'USD',
+                      customerId: StripeKeys.testCustomerId,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 15,
+                    ),
+                  ),
+                  child: const Text('Pay with Stripe'),
                 ),
-              ),
-              child: const Text('Pay Now with Stripe'),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('PayPal coming soon...')),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF003087),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 15,
+                    ),
+                  ),
+                  child: const Text('Pay with PayPal'),
+                ),
+              ],
             );
           },
         ),

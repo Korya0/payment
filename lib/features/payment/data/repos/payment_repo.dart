@@ -3,31 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:payment_getway/core/utils/failures.dart';
 import 'package:payment_getway/core/utils/stripe_keys.dart';
-import 'package:payment_getway/features/payment/data/datasources/stripe_remote_data_source.dart';
-import 'package:payment_getway/features/payment/data/models/payment_intent_model.dart';
+import 'package:payment_getway/features/payment/data/datasources/stripe_data_source.dart';
+import 'package:payment_getway/features/payment/data/models/stripe_payment_model.dart';
 
 abstract class PaymentRepository {
-  Future<Either<Failure, void>> initPaymentSheet({
+  Future<Either<Failure, void>> initStripePayment({
     required String amount,
     required String currency,
     required String customerId,
   });
-  Future<Either<Failure, void>> displayPaymentSheet();
+  Future<Either<Failure, void>> displayStripePaymentSheet();
 }
 
 class PaymentRepositoryImpl implements PaymentRepository {
-  final StripeRemoteDataSource remoteDataSource;
+  final StripeDataSource stripeDataSource; // التسمية الجديدة
 
-  PaymentRepositoryImpl(this.remoteDataSource);
+  PaymentRepositoryImpl(this.stripeDataSource);
 
   @override
-  Future<Either<Failure, void>> initPaymentSheet({
+  Future<Either<Failure, void>> initStripePayment({
     required String amount,
     required String currency,
     required String customerId,
   }) async {
     try {
-      final PaymentIntentModel secrets = await remoteDataSource
+      final StripePaymentModel secrets = await stripeDataSource
           .getPaymentSecrets(
             amount: amount,
             currency: currency,
@@ -39,14 +39,11 @@ class PaymentRepositoryImpl implements PaymentRepository {
           paymentIntentClientSecret: secrets.clientSecret,
           customerEphemeralKeySecret: secrets.ephemeralKey,
           customerId: secrets.customerId,
+          merchantDisplayName: 'Senior Flutter Store',
           allowsDelayedPaymentMethods: true,
-
-          /// Apple Pay Support
           applePay: const PaymentSheetApplePay(
             merchantCountryCode: StripeKeys.applePayCountryCode,
           ),
-
-          /// Google Pay Support
           googlePay: const PaymentSheetGooglePay(
             merchantCountryCode: StripeKeys.googlePayCountryCode,
             testEnv: StripeKeys.isGooglePayTestEnv,
@@ -64,7 +61,7 @@ class PaymentRepositoryImpl implements PaymentRepository {
   }
 
   @override
-  Future<Either<Failure, void>> displayPaymentSheet() async {
+  Future<Either<Failure, void>> displayStripePaymentSheet() async {
     try {
       await Stripe.instance.presentPaymentSheet();
       return const Right(null);

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:payment_getway/core/utils/bloc_observer.dart';
 import 'package:payment_getway/core/utils/stripe_keys.dart';
-import 'package:payment_getway/features/payment/data/datasources/stripe_remote_data_source.dart';
+import 'package:payment_getway/features/payment/data/datasources/stripe_data_source.dart';
 import 'package:payment_getway/features/payment/data/repos/payment_repo.dart';
 import 'package:payment_getway/features/payment/presentation/cubit/payment_cubit.dart';
 import 'package:payment_getway/features/payment/presentation/views/checkout_view.dart';
@@ -11,7 +11,7 @@ import 'package:payment_getway/features/payment/presentation/views/checkout_view
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 🌍 Global Stripe Configuration for all platforms
+  // 🌍 Global Stripe Configuration
   Stripe.publishableKey = StripeKeys.publishableKey;
   Stripe.merchantIdentifier = StripeKeys.merchantIdentifier;
 
@@ -27,8 +27,11 @@ class PaymentApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          PaymentCubit(PaymentRepositoryImpl(StripeRemoteDataSourceImpl())),
+      create: (context) => PaymentCubit(
+        PaymentRepositoryImpl(
+          StripeDataSourceImpl(),
+        ), // استخدام الاسم الجديد الموحد
+      ),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.blue),

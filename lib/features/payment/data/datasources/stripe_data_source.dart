@@ -1,20 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:payment_getway/core/utils/stripe_keys.dart';
-import 'package:payment_getway/features/payment/data/models/payment_intent_model.dart';
+import 'package:payment_getway/features/payment/data/models/stripe_payment_model.dart';
 
-abstract class StripeRemoteDataSource {
-  Future<PaymentIntentModel> getPaymentSecrets({
+abstract class StripeDataSource {
+  Future<StripePaymentModel> getPaymentSecrets({
     required String amount,
     required String currency,
     required String customerId,
   });
 }
 
-class StripeRemoteDataSourceImpl implements StripeRemoteDataSource {
+class StripeDataSourceImpl implements StripeDataSource {
   final Dio dio = Dio();
 
   @override
-  Future<PaymentIntentModel> getPaymentSecrets({
+  Future<StripePaymentModel> getPaymentSecrets({
     required String amount,
     required String currency,
     required String customerId,
@@ -48,7 +48,7 @@ class StripeRemoteDataSourceImpl implements StripeRemoteDataSource {
         ),
       );
 
-      return PaymentIntentModel(
+      return StripePaymentModel(
         clientSecret: paymentIntentResponse.data['client_secret'],
         customerId: customerId,
         ephemeralKey: ephemeralKeyResponse.data['secret'],
