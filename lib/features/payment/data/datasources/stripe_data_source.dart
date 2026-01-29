@@ -36,12 +36,7 @@ class StripeDataSourceImpl implements StripeDataSource {
       // 2. Payment Intent
       final paymentIntentResponse = await dio.post(
         'https://api.stripe.com/v1/payment_intents',
-        data: {
-          'amount': amount,
-          'currency': currency,
-          'customer': customerId,
-          'setup_future_usage': 'off_session',
-        },
+        data: {'amount': amount, 'currency': currency, 'customer': customerId},
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {'Authorization': 'Bearer ${StripeKeys.secretKey}'},

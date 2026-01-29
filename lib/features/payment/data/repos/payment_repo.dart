@@ -39,11 +39,11 @@ class PaymentRepositoryImpl implements PaymentRepository {
           paymentIntentClientSecret: secrets.clientSecret,
           customerEphemeralKeySecret: secrets.ephemeralKey,
           customerId: secrets.customerId,
-          merchantDisplayName: 'Senior Flutter Store',
+          merchantDisplayName: 'Payment Getway App',
           allowsDelayedPaymentMethods: true,
-          applePay: const PaymentSheetApplePay(
-            merchantCountryCode: StripeKeys.applePayCountryCode,
-          ),
+          // applePay: const PaymentSheetApplePay(
+          //   merchantCountryCode: StripeKeys.applePayCountryCode,
+          // ),
           googlePay: const PaymentSheetGooglePay(
             merchantCountryCode: StripeKeys.googlePayCountryCode,
             testEnv: StripeKeys.isGooglePayTestEnv,

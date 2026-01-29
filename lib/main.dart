@@ -11,9 +11,11 @@ import 'package:payment_getway/features/payment/presentation/views/checkout_view
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 🌍 Global Stripe Configuration
+  // Stripe public key used to initialize the Stripe SDK
   Stripe.publishableKey = StripeKeys.publishableKey;
-  Stripe.merchantIdentifier = StripeKeys.merchantIdentifier;
+
+  // Apple Pay merchant identifier (iOS only)
+  //Stripe.merchantIdentifier = StripeKeys.merchantIdentifier;
 
   await Stripe.instance.applySettings();
 
@@ -27,14 +29,16 @@ class PaymentApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => PaymentCubit(
-        PaymentRepositoryImpl(
-          StripeDataSourceImpl(),
-        ), // استخدام الاسم الجديد الموحد
-      ),
+      create: (context) =>
+          PaymentCubit(PaymentRepositoryImpl(StripeDataSourceImpl())),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.blue),
+        theme: ThemeData(
+          useMaterial3: true,
+          // Dark Mode
+          brightness: Brightness.dark,
+          colorSchemeSeed: Colors.blue,
+        ),
         home: const CheckoutView(),
       ),
     );
